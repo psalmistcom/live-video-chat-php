@@ -1,0 +1,17 @@
+{
+    "name": "highq/live-video-php",
+    "autoload": {
+        "psr-4": {
+            "MyApp\\": "core/classes"
+        }
+    },
+    "authors": [
+        {
+            "name": "David Adewale",
+            "email": "dadewale9@gmail.com"
+        }
+    ],
+    "require": {
+        "cboden/ratchet": "^0.4.3"
+    }
+}
