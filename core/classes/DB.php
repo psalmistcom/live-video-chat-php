@@ -10,7 +10,7 @@
         public function __construct(){
             try{
                 $this->db = new PDO($this->dsn,$this->dbuser,$this->dbpass);
-                echo 'Connected';
+                // echo 'Connected';
             }catch (PDOException $e){
                 echo 'Error : '.$e->getMessage();
             }
