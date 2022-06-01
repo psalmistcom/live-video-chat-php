@@ -1,6 +1,5 @@
 <?php
-    require 'DB.php';
-
+    
     class User extends DB{
         //check if the email exists
         public function emailExists($email){
@@ -15,5 +14,15 @@
             }else {
                 return false;
             }
+        }
+
+        //function to hash the users password
+        public function hash($password){
+            return password_hash($password, PASSWORD_DEFAULT);
+        }
+        
+        //function to redirect the user 
+        public function redirect($location){
+            header('Location: '.BASE_URL. $location);
         }
     }

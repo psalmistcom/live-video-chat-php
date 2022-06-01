@@ -1,6 +1,6 @@
 <?php
     include 'core/init.php';
-    
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST)) {
             $email = trim(stripslashes(htmlentities($_POST['email'])));
@@ -11,7 +11,16 @@
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $error = 'Invalid email address';
                 }else {
-                    # code...
+                    if ($user = $userObj->emailExists($email)) {
+                        if (password_verify($password, $user->password)) {
+                            session_id_regenerate();
+                            $_SESSION['userID'] = $user->userID;
+                            // redirect thhe user 
+                            $userObj->redirect('home.php');
+                        }else {
+                            $error = 'Incorrect email or password';
+                        }
+                    }
                 }
             }else {
                 // display error
