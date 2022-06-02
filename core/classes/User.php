@@ -1,17 +1,23 @@
 <?php
     
     class User{
-        public $db, $userID;
+        public $db, $userID, $sessionID;
 
         public function __construct(){
             $db = new DB;
             $this->db = $db->connect();
             $this->userID = $this->ID();
+            $this->sessionID = $this->getSessionID();
         }
         public function ID(){
             if ($this->isLoggedIn()) {
                return $_SESSION['userID'];
             }
+        }
+
+        // function to get the current user session 
+        public function getSessionID(){
+            return session_id();
         }
         //check if the email exists
         public function emailExists($email){
@@ -87,5 +93,32 @@
                 ';
             }
 
+        }
+
+        //Grab user by each username
+        public function getUserByUsername($username){
+            $sql = "SELECT * FROM users WHERE username = :username";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(":username", $username, PDO::PARAM_STR);
+            $stmt->execute();
+            return $users = $stmt->fetch(PDO::FETCH_OBJ);
+        }
+
+        public function updateSession(){
+            $sql = "UPDATE users SET sessionID = :sessionID WHERE userID = :userID";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':sessionID', $this->sessionID, PDO::PARAM_STR);
+            $stmt->bindParam(':userID', $this->userID, PDO::PARAM_INT);
+
+            $stmt->execute();
+        }
+
+        //get user by seeion
+        public function getUserBySession($sessionID){
+            $sql = "SELECT * FROM users WHERE sessionID = :sessionID";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(":sessionID", $sessionID, PDO::PARAM_STR);
+            $stmt->execute();
+            return $users = $stmt->fetch(PDO::FETCH_OBJ);
         }
     }
