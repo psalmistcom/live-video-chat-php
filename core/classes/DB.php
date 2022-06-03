@@ -1,4 +1,8 @@
 <?php
+
+    namespace MyApp;
+    use PDO;
+    
     class DB{
         // initilize credentials 
         private $dsn = "mysql:host=localhost; dbname=live-video-php";
