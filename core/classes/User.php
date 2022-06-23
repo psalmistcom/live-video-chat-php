@@ -123,4 +123,14 @@
             $stmt->execute();
             return $users = $stmt->fetch(PDO::FETCH_OBJ);
         }
+
+        //update connection
+        public function updateConnection($connectionID, $userID){
+            $sql = "UPDATE users SET connectionID = :connectionID WHERE userID = :userID";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':connectionID',$connectionID, PDO::PARAM_STR);
+            $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
+
+            $stmt->execute();
+        }
     }

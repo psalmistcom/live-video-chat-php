@@ -14,9 +14,17 @@ class Chat implements MessageComponentInterface {
 
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
-        $this->clients->attach($conn);
-        var_dump($this->userObj->userData('1'));
-        echo "New connection! ({$conn->resourceId})\n";
+        $queryString = $conn->httpRequest->getUri()->getQuery();
+        parse_str($queryString, $query);
+        
+        if($data = $this->userObj->getUserBySession($query['token'])){
+            $this->data = $data;
+            $conn->data = $data;
+            $this->clients->attach($conn);
+            $this->userObj->updateConnection($conn->resourceId, $data->userID);
+            // var_dump($this->userObj->userData('1'));
+            echo "New connection! ({$data->username})\n";
+        }
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
@@ -24,10 +32,22 @@ class Chat implements MessageComponentInterface {
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
+        $data = json_decode($msg);
+        $sendTo = $this->userObj->userData($data['sendTo']);
+
+        $send['sendTo'] = $sendTo;
+        $send['by'] = $from->data->userID;
+        $send['profileImage'] = $from->data->profileImage;
+        $send['username'] = $from->data->username;
+        $send['type'] = $data['type'];
+        $send['data'] = $data['data'];
+
         foreach ($this->clients as $client) {
             if ($from !== $client) {
                 // The sender is not the receiver, send to each client connected
-                $client->send($msg);
+                if ($client->resourceId == $sendTo->connectionID || $from == $client) {                    
+                    $client->send($msg);
+                }
             }
         }
     }

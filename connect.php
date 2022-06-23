@@ -35,7 +35,7 @@
           integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
           crossorigin="anonymous"></script>
           <script>
-              const conn = new WebSocket('ws://localhost:8080/?token=<?= $userObj->sessionID; ?>');
+              const conn = new WebSocket('ws://localhost:8080/?token=<?php echo $userObj->sessionID; ?>');
           </script>
     <!-- Jquery timer -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/timer.jquery/0.7.0/timer.jquery.js"></script>
